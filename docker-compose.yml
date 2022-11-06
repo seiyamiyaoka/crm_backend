@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./src:/go/src
+    tty: true
+    depends_on:
+      - db
+  db:
+    build:
+      context: .
+      dockerfile: ./docker/db/Dockerfile
+    ports:
+      - 3306:3306
+    env_file:
+      - ./docker/db/.env
+    volumes:
+      - type: volume
+        source: db-storage
+        target: /var/lib/mysql
+        volume:
+          nocopy: true
+volumes:
+  db-storage:
